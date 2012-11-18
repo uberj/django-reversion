@@ -135,6 +135,7 @@ class RevisionContextManager(local):
         self._meta = []
         self._ignore_duplicates = False
         self._db = None
+        self.disabled = False
     
     def is_active(self):
         """Returns whether there is an active revision for this thread."""
@@ -164,7 +165,7 @@ class RevisionContextManager(local):
         """Ends a revision for this thread."""
         self._assert_active()
         self._stack.pop()
-        if not self._stack:
+        if not self._stack and not self.disabled:
             try:
                 if not self.is_invalid():
                     # Save the revision data.
